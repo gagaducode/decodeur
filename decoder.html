@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Décodeur Secret 🔐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 12px;
+            font-size: 18px;
+            letter-spacing: 6px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 32px;
+            padding: 24px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            border: 2px solid #667eea;
+            display: none;
+        }
+
+        .result-label {
+            color: #667eea;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .phrase {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a1a1a;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .empty-state {
+            margin-top: 32px;
+            padding: 24px;
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .empty-state-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .phrase {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Décodeur secret 🔐</h1>
+        <p class="subtitle">Regarde le code-barres et rentre les chiffres pour révéler le message caché ✨</p>
+
+        <div class="form-group">
+            <label for="codeInput">Code (10 chiffres)</label>
+            <input 
+                type="text" 
+                id="codeInput" 
+                placeholder="_ _ _ _ _ _ _ _ _ _" 
+                maxlength="10"
+            />
+            <div class="error" id="error"></div>
+        </div>
+
+        <button onclick="decodeMessage()">Vérifier le code ✨</button>
+
+        <div class="result" id="result">
+            <div class="result-label">✨ Message décodé ✨</div>
+            <p class="phrase" id="phrase">—</p>
+        </div>
+
+        <div class="empty-state" id="empty">
+            <div class="empty-state-icon">🤔</div>
+            <p>En attente...</p>
+        </div>
+    </div>
+
+    <script>
+        const correctCode = "4782956341";
+        const secretPhrase = "Bravo M Juan";
+
+        function decodeMessage() {
+            const input = document.getElementById("codeInput").value.trim();
+            const errorDiv = document.getElementById("error");
+            const resultDiv = document.getElementById("result");
+            const emptyDiv = document.getElementById("empty");
+            const phraseDiv = document.getElementById("phrase");
+
+            errorDiv.style.display = "none";
+
+            if (!input) {
+                errorDiv.textContent = "Entre un code d'abord ! 📝";
+                errorDiv.style.display = "block";
+                resultDiv.style.display = "none";
+                emptyDiv.style.display = "block";
+                return;
+            }
+
+            if (input.length !== 10) {
+                errorDiv.textContent = "Le code doit faire exactement 10 chiffres ! 🔢";
+                errorDiv.style.display = "block";
+                resultDiv.style.display = "none";
+                emptyDiv.style.display = "block";
+                return;
+            }
+
+            if (input === correctCode) {
+                resultDiv.style.display = "block";
+                emptyDiv.style.display = "none";
+                phraseDiv.textContent = secretPhrase;
+            } else {
+                errorDiv.textContent = "❌ Pas le bon code... Réessaie ! 😄";
+                errorDiv.style.display = "block";
+                resultDiv.style.display = "none";
+                emptyDiv.style.display = "block";
+            }
+        }
+
+        document.getElementById("codeInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") decodeMessage();
+        });
+
+        // Focus sur l'input au chargement
+        document.getElementById("codeInput").focus();
+    </script>
+</body>
+</html>
